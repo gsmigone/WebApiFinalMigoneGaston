@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApiFinalMigoneGaston.Context;
 using WebApiFinalMigoneGaston.Entidades;
 
@@ -65,6 +66,30 @@ namespace WebApiFinalMigoneGaston.Controllers
 
             return medico;
         }
+
+        [HttpPut("{id}")]
+        //MODIFICAR MEDICO POR ID
+        public ActionResult Put(int id, Medico medico)
+        {
+            if (id != medico.MedicoID)
+            {
+                return BadRequest();
+            }
+            Context.Entry(medico).State = EntityState.Modified;
+            Context.SaveChanges();
+            return NoContent(); 
+        }
+
+
+        [HttpGet("especialidad/{Especialidad}")]
+        //MOSTRAR POR ESPECIALIDAD
+        public IEnumerable<Medico> GetEspecialidad(string especialidad)
+        {
+            var medico = (from p in Context.Medicos where p.Especialidad == especialidad
+                          select p).ToList();
+            return (IEnumerable<Medico>)medico;
+        }
+
 
     }
 
